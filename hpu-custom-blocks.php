@@ -26,8 +26,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @see https://developer.wordpress.org/reference/functions/register_block_type/
  */
 function hpu_custom_blocks_block_init() {
-	register_block_type( __DIR__ . '/build/faculty-staff-card' );
-	// require_once plugin_dir_path( __FILE__ ) . 'functions/post-type-faculty-staff.php';
+	$build_dir = plugin_dir_path( __FILE__ ) . 'build/';
+	foreach ( glob( $build_dir . '*/' ) as $block_dir ) {
+		if ( ! file_exists( $block_dir . 'block.json' ) ) {
+			error_log( 'hpu-custom-blocks ### failed to register block at ' . $block_dir . ' --- no block.json file found' );
+			return;
+		}
+		register_block_type( $block_dir );
+	}
 }
 add_action( 'init', 'hpu_custom_blocks_block_init' );
 
