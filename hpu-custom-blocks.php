@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @see https://developer.wordpress.org/reference/functions/register_block_type/
  */
 function hpu_custom_blocks_block_init() {
-	register_block_type( __DIR__ . '/build' );
+	register_block_type( __DIR__ . '/build/faculty-staff-card' );
 	// require_once plugin_dir_path( __FILE__ ) . 'functions/post-type-faculty-staff.php';
 }
 add_action( 'init', 'hpu_custom_blocks_block_init' );
