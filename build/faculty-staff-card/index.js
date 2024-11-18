@@ -326,7 +326,7 @@ module.exports = window["wp"]["element"];
   \*******************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"hpu/faculty-staff-card","version":"0.1.0","title":"Faculty Staff Card","category":"theme","icon":"admin-users","description":"HPU Faculty-Staff Profile Card","example":{},"supports":{"html":false},"textdomain":"faculty-staff-card","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js","attributes":{"title":{"type":"string"},"postID":{"type":"integer"}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"hpu/faculty-staff-card","version":"0.1.0","title":"Faculty Staff Card","category":"theme","icon":"admin-users","description":"HPU Faculty-Staff Profile Card","example":{},"supports":{"html":false},"textdomain":"faculty-staff-card","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","attributes":{"postID":{"type":"integer"}}}');
 
 /***/ })
 
