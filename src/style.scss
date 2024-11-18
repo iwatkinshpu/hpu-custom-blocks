@@ -1,0 +1,75 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.wp-block-hpu-faculty-staff-card {
+	margin: 0;
+
+	.profile-card {
+		width: 360px;
+		height: 140px;
+		display: flex;
+		flex-direction: row;
+		padding: 5px;
+		margin: 5px;
+		border-radius: 16px;
+		background-color: #fff;
+		border: 1px solid #eee;
+
+		.profile-card-image {
+			margin: 5px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100px;
+			min-width: 100px;
+
+			img {
+				border-radius: 50%;
+				height: 100px;
+				width: 100px;
+			}
+		}
+
+		.profile-card-text {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			padding: 15px;
+			font-size: 13px;
+			line-height: 1.5;
+			flex-shrink: 1;
+	
+			a {
+				color: #000;
+				text-decoration: none;
+				transition: color .3s;
+					
+				&:hover {
+					color: #d93c0d;
+				}
+			}
+
+			.profile-card-title {
+				font: 18px 'Bitter', Serif;
+	
+				a {
+					color: #330072;
+					
+					&:hover {
+						color: #d93c0d;
+					}
+				}
+			}
+
+			.profile-card-role {
+				font-size: 14px;
+				font-style: italic;
+				color: #000;
+			}
+		}
+	}
+}
