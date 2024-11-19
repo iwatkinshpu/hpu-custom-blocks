@@ -113,13 +113,28 @@ function Edit({
   const profileSearchControls = post => {
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
       className: "faculty-staff-card editor-search-control",
-      children: [post && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+      children: [post && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
         className: "selected-result",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-          children: post.label
-        })
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("label", {
+          children: "Currently selected"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+            children: post.title.rendered
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+            variant: "tertiary",
+            size: "small",
+            isDestructive: true,
+            onClick: () => {
+              setAttributes({
+                postID: null
+              });
+            },
+            children: "X"
+          })]
+        })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SearchControl, {
         label: "Select Directory Profile",
+        hideLabelFromVision: false,
         value: searchInput,
         onChange: value => {
           setSearchInput(value);
@@ -141,6 +156,10 @@ function Edit({
         })
       })]
     });
+  };
+  const conformPhoneNumber = phoneNumber => {
+    const pattern = /^[^\d]*\+?1?[^\d]*(\d{3})[^\d]*(\d{3})[^\d]*(\d{4})[^\d]*$/;
+    return phoneNumber.replace(pattern, '+1 ($1) $2-$3');
   };
 
   // Return editor
@@ -180,9 +199,9 @@ function Edit({
             className: "profile-card-phone",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
               className: "icon"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("a", {
-              "data-preview-href": `tel:+1 ${post.acf.phone}`,
-              children: ["+1 ", post.acf.phone]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+              "data-preview-href": `tel:${conformPhoneNumber(post.acf.phone)}`,
+              children: conformPhoneNumber(post.acf.phone)
             })]
           })]
         })]

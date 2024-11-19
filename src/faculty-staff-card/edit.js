@@ -1,5 +1,5 @@
 import { useState, useEffect } from '@wordpress/element';
-import { SearchControl, Spinner, Popover } from '@wordpress/components';
+import { SearchControl, Spinner, Popover, Button } from '@wordpress/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import './editor.scss';
 
@@ -87,11 +87,21 @@ export default function Edit( { attributes, setAttributes } ) {
 			<div className='faculty-staff-card editor-search-control'>
 				{ post && (
 					<div className='selected-result'>
-						<span>{ post.label }</span>
+						<label>Currently selected</label>
+						<div>
+							<span>{ post.title.rendered }</span>
+							<Button
+								variant='tertiary'
+								size='small'
+								isDestructive
+								onClick={ () => { setAttributes( { postID: null } ) } }
+							>X</Button>
+						</div>
 					</div>
-				)}
+				) }
 				<SearchControl
 					label='Select Directory Profile'
+					hideLabelFromVision={ false }
 					value={ searchInput }
 					onChange={ ( value ) => {
 						setSearchInput( value );
@@ -120,6 +130,11 @@ export default function Edit( { attributes, setAttributes } ) {
 				) }
 			</div>
 		)
+	}
+
+	const conformPhoneNumber = ( phoneNumber ) => {
+		const pattern = /^[^\d]*\+?1?[^\d]*(\d{3})[^\d]*(\d{3})[^\d]*(\d{4})[^\d]*$/;
+		return phoneNumber.replace( pattern, '+1 ($1) $2-$3' );
 	}
 
 	// Return editor
@@ -169,7 +184,7 @@ export default function Edit( { attributes, setAttributes } ) {
 											<use xlink:href='#icon_phone'></use>
 											</svg> */}
 									</span>
-									<a data-preview-href={ `tel:+1 ${ post.acf.phone }` }>+1 { post.acf.phone }</a>
+									<a data-preview-href={ `tel:${ conformPhoneNumber( post.acf.phone ) }` }>{ conformPhoneNumber( post.acf.phone ) }</a>
 								</div>
 							) }
 						</div>

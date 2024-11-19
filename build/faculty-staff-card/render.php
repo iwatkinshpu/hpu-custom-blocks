@@ -25,13 +25,17 @@
 		$post_data = array(
 			'title'     => get_the_title( $post_id ),
 			'staff_url' => get_permalink( $post_id ),
-			'img_id'    => $image['id'],
-			'img_url'   => isset( $image['url'] )   ? $image['url']   : '',
 			'thumb_url' => isset( $image['thumb'] ) ? $image['thumb'] : '',
 			'job_role'  => get_field( 'job_role', $post_id ),
 			'phone'     => get_field( 'phone',    $post_id ),
 			'email'     => get_field( 'email',    $post_id ),
 		);
+
+		// Conform the phone number if set
+		if ( $post_data['phone'] ) {
+			$pattern = '/^[^\d]*\+?1?[^\d]*(\d{3})[^\d]*(\d{3})[^\d]*(\d{4})[^\d]*$/';
+			$post_data['phone'] = preg_replace( $pattern, '+1 ($1) $2-$3', $post_data['phone'] );
+		}
 
 		?>
 		<div class="profile-card">
@@ -72,7 +76,7 @@
 								<use xlink:href="#icon_phone"></use>
 							</svg>
 						</span> -->
-						<a href="tel:+1 <?php esc_attr_e( $post_data['phone'] ); ?>">+1 <?php esc_html_e( $post_data['phone'] ); ?></a>
+						<a href="tel:<?php esc_attr_e( $post_data['phone'] ); ?>"><?php esc_html_e( $post_data['phone'] ); ?></a>
 					</div>
 				<?php endif; ?>
 			</div>
