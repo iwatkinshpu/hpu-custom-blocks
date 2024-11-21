@@ -2,10 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/faculty-staff-card/edit.js":
-/*!****************************************!*\
-  !*** ./src/faculty-staff-card/edit.js ***!
-  \****************************************/
+/***/ "./src/blocks/faculty-staff-card/edit.js":
+/*!***********************************************!*\
+  !*** ./src/blocks/faculty-staff-card/edit.js ***!
+  \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -14,11 +14,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor.scss */ "./src/faculty-staff-card/editor.scss");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _components_PostSearchControls__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/PostSearchControls */ "./src/components/PostSearchControls.js");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor.scss */ "./src/blocks/faculty-staff-card/editor.scss");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__);
 
@@ -33,43 +32,8 @@ function Edit({
   const {
     postID
   } = attributes;
-  const [posts, setPosts] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const [post, setPost] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [imageData, setImageData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-  const [searchInput, setSearchInput] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
-  const [isLoading, setIsLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-  const [isPopoverOpen, setIsPopoverOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-
-  // Fetch posts for selector
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    setIsLoading(true);
-    const fetchPosts = async apiQuery => {
-      try {
-        let apiQuery = searchInput ? '?search=' + searchInput + '&per_page=20' : '?per_page=50&orderby=date';
-        const response = await fetch(`${window.location.origin}/wp-json/wp/v2/faculty-staff${apiQuery}`);
-        if (response.ok) {
-          const data = await response.json();
-          setPosts(data.map(result => ({
-            label: result.title.rendered,
-            value: result.id
-          })));
-        }
-      } catch (error) {
-        console.log('Error fetching posts:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    // Setup the timeout query
-    const searchQuery = setTimeout(() => {
-      fetchPosts();
-    }, 200);
-    // reset the timeout on input
-    return () => {
-      clearTimeout(searchQuery);
-    };
-  }, [searchInput]);
 
   // Fetch selected post to access data
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -108,55 +72,6 @@ function Edit({
       setImageData(null);
     }
   }, [post]);
-
-  // create control for search & selection of profiles
-  const profileSearchControls = post => {
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-      className: "faculty-staff-card editor-search-control",
-      children: [post && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-        className: "selected-result",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("label", {
-          children: "Currently selected"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-            children: post.title.rendered
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
-            variant: "tertiary",
-            size: "small",
-            isDestructive: true,
-            onClick: () => {
-              setAttributes({
-                postID: null
-              });
-            },
-            children: "X"
-          })]
-        })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SearchControl, {
-        label: "Select Directory Profile",
-        hideLabelFromVision: false,
-        value: searchInput,
-        onChange: value => {
-          setSearchInput(value);
-          setIsPopoverOpen(true);
-        },
-        __nextHasNoMarginBottom: true
-      }), isPopoverOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
-        className: "faculty-staff-card search-results",
-        onClose: () => setIsPopoverOpen(false),
-        position: "bottom",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("ul", {
-          className: "search-results",
-          children: [isLoading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Spinner, {}), posts.map(result => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("li", {
-            onClick: () => setAttributes({
-              postID: parseInt(result.value, 10)
-            }),
-            children: result.label || 'No Label'
-          }, result.value || index))]
-        })
-      })]
-    });
-  };
   const conformPhoneNumber = phoneNumber => {
     const pattern = /^[^\d]*\+?1?[^\d]*(\d{3})[^\d]*(\d{3})[^\d]*(\d{4})[^\d]*$/;
     return phoneNumber.replace(pattern, '+1 ($1) $2-$3');
@@ -164,10 +79,19 @@ function Edit({
 
   // Return editor
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
-      children: profileSearchControls(post)
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_components_PostSearchControls__WEBPACK_IMPORTED_MODULE_2__.PostSearchControls, {
+        postID: postID,
+        postType: "faculty-staff",
+        label: "Select Directory Profile",
+        onChange: value => {
+          setAttributes({
+            postID: value
+          });
+        }
+      })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-      ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)(),
+      ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)(),
       children: post ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
         className: "profile-card",
         children: [imageData && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
@@ -217,18 +141,18 @@ function Edit({
 
 /***/ }),
 
-/***/ "./src/faculty-staff-card/index.js":
-/*!*****************************************!*\
-  !*** ./src/faculty-staff-card/index.js ***!
-  \*****************************************/
+/***/ "./src/blocks/faculty-staff-card/index.js":
+/*!************************************************!*\
+  !*** ./src/blocks/faculty-staff-card/index.js ***!
+  \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.scss */ "./src/faculty-staff-card/style.scss");
-/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit */ "./src/faculty-staff-card/edit.js");
-/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./block.json */ "./src/faculty-staff-card/block.json");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.scss */ "./src/blocks/faculty-staff-card/style.scss");
+/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit */ "./src/blocks/faculty-staff-card/edit.js");
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./block.json */ "./src/blocks/faculty-staff-card/block.json");
 /**
  * Registers a new block provided a unique name and an object defining its behavior.
  *
@@ -265,10 +189,175 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/faculty-staff-card/editor.scss":
-/*!********************************************!*\
-  !*** ./src/faculty-staff-card/editor.scss ***!
-  \********************************************/
+/***/ "./src/components/PostSearchControls.js":
+/*!**********************************************!*\
+  !*** ./src/components/PostSearchControls.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   PostSearchControls: () => (/* binding */ PostSearchControls)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+function PostSearchControls(props) {
+  const [postID, setPostID] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(props.postID || null);
+  const [post, setPost] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [queriedPosts, setQueriedPosts] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
+  const [isLoading, setIsLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [isPopoverOpen, setIsPopoverOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [searchTrigger, setSearchTrigger] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const searchInputRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)('');
+
+  // handle changes to search Input
+  const handleSearchInputChange = value => {
+    searchInputRef.current = value;
+    setSearchTrigger(value);
+    setIsPopoverOpen(true);
+  };
+
+  // Handle missing onChange props
+  const handleChange = value => {
+    setPostID(value);
+    if ('function' === typeof props.onChange) {
+      props.onChange(value);
+    }
+  };
+
+  // Strip slashes for endpoint construction
+  const stripSlashes = string => string?.replace(/^\/|\/$/, '') || '';
+
+  // Construct API endpoint for queries
+  const constructEndPoint = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(() => {
+    const apiDomain = stripSlashes(props?.apiDomain) || window.location.origin;
+    const apiNameSpace = stripSlashes(props?.apiBasePath) || 'wp-json/wp/v2';
+    const postType = stripSlashes(props?.postType) || 'posts';
+    return `${apiDomain}/${apiNameSpace}/${postType}`;
+  }, [props.apiDomain, props.apiBasePath, props.postType]);
+
+  // Fetch posts for selector
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (!searchTrigger) {
+      setQueriedPosts([]);
+      setIsLoading(false);
+      return;
+    }
+    setIsLoading(true);
+
+    // retrieve post list
+    const fetchPosts = async () => {
+      try {
+        const apiEndPoint = constructEndPoint();
+        const searchQuery = searchInputRef.current ? `?search=${searchInputRef.current}&per_page=20` : '?per_page=20&orderby=date';
+        const apiQuery = apiEndPoint + searchQuery;
+        const response = await fetch(apiQuery);
+        if (response.ok) {
+          const data = await response.json();
+          setQueriedPosts(data.map(result => ({
+            label: result?.title?.rendered || 'Untitled',
+            value: result.id
+          })));
+        }
+      } catch (error) {
+        console.log('Error fetching posts: ', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    // Setup the timeout query
+    const searchTimeout = setTimeout(fetchPosts, 200);
+
+    // reset the timeout on additional inputs
+    return () => clearTimeout(searchTimeout);
+  }, [searchTrigger, constructEndPoint]);
+
+  // Fetch post when the PostID changes
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (postID) {
+      const fetchPost = async () => {
+        try {
+          const apiEndPoint = constructEndPoint();
+          const response = await fetch(`${apiEndPoint}/${postID}`);
+          if (response.ok) {
+            const data = await response.json();
+            setPost(data);
+          }
+        } catch (error) {
+          console.log('Error fetching selected post: ', error);
+        }
+      };
+      fetchPost();
+    } else {
+      setPost(null);
+    }
+  }, [postID, constructEndPoint]);
+
+  // Render Component
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+    className: "post-search-control",
+    children: [post && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "post-search-control-selected",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+        children: "Currently selected"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+          children: post.title?.rendered || post.title
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+          variant: "tertiary",
+          size: "small",
+          isDestructive: true,
+          onClick: () => {
+            handleChange(null);
+          },
+          children: "X"
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SearchControl, {
+      className: "post-search-control-selector",
+      label: props.searchLabel || 'Search Posts',
+      hideLabelFromVision: false,
+      value: searchInputRef.current,
+      onChange: handleSearchInputChange,
+      __nextHasNoMarginBottom: true
+    }), isPopoverOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
+      className: "post-search-control-results",
+      onClose: () => setIsPopoverOpen(false),
+      position: "bottom",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("ul", {
+        className: "search-results",
+        "aria-live": "polite",
+        children: [isLoading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Spinner, {}), queriedPosts.map(result => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("li", {
+          role: "button",
+          tabIndex: 0,
+          onClick: () => {
+            handleChange(result.value);
+            setIsPopoverOpen(false);
+          },
+          children: result.label
+        }, result.value)), !isLoading && 0 === queriedPosts.length && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("li", {
+          className: "no-results",
+          children: "No Results Found. Sorry."
+        })]
+      })
+    })]
+  });
+}
+
+/***/ }),
+
+/***/ "./src/blocks/faculty-staff-card/editor.scss":
+/*!***************************************************!*\
+  !*** ./src/blocks/faculty-staff-card/editor.scss ***!
+  \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -277,10 +366,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/faculty-staff-card/style.scss":
-/*!*******************************************!*\
-  !*** ./src/faculty-staff-card/style.scss ***!
-  \*******************************************/
+/***/ "./src/blocks/faculty-staff-card/style.scss":
+/*!**************************************************!*\
+  !*** ./src/blocks/faculty-staff-card/style.scss ***!
+  \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -339,10 +428,10 @@ module.exports = window["wp"]["element"];
 
 /***/ }),
 
-/***/ "./src/faculty-staff-card/block.json":
-/*!*******************************************!*\
-  !*** ./src/faculty-staff-card/block.json ***!
-  \*******************************************/
+/***/ "./src/blocks/faculty-staff-card/block.json":
+/*!**************************************************!*\
+  !*** ./src/blocks/faculty-staff-card/block.json ***!
+  \**************************************************/
 /***/ ((module) => {
 
 module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"hpu/faculty-staff-card","version":"0.1.0","title":"Faculty Staff Card","category":"theme","icon":"admin-users","description":"HPU Faculty-Staff Profile Card","example":{},"supports":{"html":false},"textdomain":"faculty-staff-card","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","attributes":{"postID":{"type":"integer"}}}');
@@ -461,8 +550,8 @@ module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/tru
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = {
-/******/ 			"faculty-staff-card/index": 0,
-/******/ 			"faculty-staff-card/style-index": 0
+/******/ 			"blocks/faculty-staff-card/index": 0,
+/******/ 			"blocks/faculty-staff-card/style-index": 0
 /******/ 		};
 /******/ 		
 /******/ 		// no chunk on demand loading
@@ -514,7 +603,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/tru
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["faculty-staff-card/style-index"], () => (__webpack_require__("./src/faculty-staff-card/index.js")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["blocks/faculty-staff-card/style-index"], () => (__webpack_require__("./src/blocks/faculty-staff-card/index.js")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

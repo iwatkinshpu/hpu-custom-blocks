@@ -40,7 +40,7 @@
 		?>
 		<div class="profile-card">
 
-			<?php if ( $post_data['img_id'] ) : ?>
+			<?php if ( $post_data['thumb_url'] ) : ?>
 				<div class="profile-card-image">
 					<img
 						src="<?php esc_attr_e( $post_data['thumb_url'] ) ?>"

@@ -1,0 +1,25 @@
+/*!******************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/blocks/faculty-staff-card/editor.scss ***!
+  \******************************************************************************************************************************************************************************************************************************************************************/
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+.post-search-control .post-search-control-selected label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.post-search-control .post-search-control-selected span {
+  font-size: 14px;
+  padding: 0 10px;
+  margin-left: 5px;
+}
+
+.post-search-control-results li {
+  width: 280px;
+  padding: 5px 15px;
+  font-size: 14px;
+  cursor: pointer;
+}
