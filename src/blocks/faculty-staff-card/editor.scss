@@ -4,9 +4,9 @@
  * Replace them with your own styles or remove the file completely.
  */
 
-.faculty-staff-card {
+.post-search-control {
 
-	.selected-result {
+	.post-search-control-selected {
 		
 		label {
 			font-size: 11px;
@@ -20,14 +20,14 @@
 			margin-right: 5px;
 		}
 	}
+}
 
-	&.search-results {
+.post-search-control-results {
 
-		li {
-			width: 280px;
-			padding: 5px 15px;
-			font-size: 14px;
-			cursor: pointer;
-		}
+	li {
+		width: 280px;
+		padding: 5px 15px;
+		font-size: 14px;
+		cursor: pointer;
 	}
 }
