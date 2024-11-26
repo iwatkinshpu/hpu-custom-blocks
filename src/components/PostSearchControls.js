@@ -17,7 +17,7 @@ export function PostSearchControls( props ) {
 		setIsPopoverOpen( true );
 	}
 
-	// Handle missing onChange props
+	// Handle postID changes and pass to onChange() if it exists
 	const handleChange = ( value ) => {
 		setPostID( value );
 		if ( 'function' === typeof props.onChange ) {
@@ -25,16 +25,33 @@ export function PostSearchControls( props ) {
 		}
 	}
 
+	// Get blog name for API if needed
+	const getBlogName = async ( apiDomain, blogID ) => {
+		try {
+			const blogApiQuery = apiDomain + '/wp-json/hpu/v1/blogs?id=' + blogID;
+			const response     = await fetch ( blogApiQuery );
+		}
+		catch {}
+		finally {}
+	}
+
 	// Strip slashes for endpoint construction
 	const stripSlashes = ( string ) => string?.replace( /^\/|\/$/, '' ) || '';
 
 	// Construct API endpoint for queries
 	const constructEndPoint = useCallback( () => {
-		const apiDomain    = stripSlashes( props?.apiDomain )   || window.location.origin;
-		const apiNameSpace = stripSlashes( props?.apiBasePath ) || 'wp-json/wp/v2';
-		const postType     = stripSlashes( props?.postType )    || 'posts';
-		return `${ apiDomain }/${ apiNameSpace }/${ postType }`;
-	}, [ props.apiDomain, props.apiBasePath, props.postType ] );
+
+		// if using a custon namespace for the api, do not assume a default post-type is needed
+		const defaultPostType = ( props?.apiNameSpace ) ? '' : 'posts';
+
+		// Assemble the endpoint
+		const apiDomain       = stripSlashes( props?.apiDomain )    || window.location.origin;
+		const apiBlogName     = ( props?.blogID ) ? getBlogName( apiDomain, props.blogID ) : '/';
+		const apiNameSpace    = stripSlashes( props?.apiNameSpace ) || 'wp-json/wp/v2';
+		const postType        = stripSlashes( props?.postType )     || defaultPostType;
+
+		return stripSlashes( `${ apiDomain }${apiBlogName}${ apiNameSpace }/${ postType }` );
+	}, [ props.apiDomain, props.apiNameSpace, props.postType ] );
 
 	// Fetch posts for selector
 	useEffect( () => {

@@ -4,18 +4,17 @@ import { PostSearchControls } from '../../components/PostSearchControls';
 import './editor.scss';
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { postID }                          = attributes;
-	const [ post, setPost ]                   = useState( null );
-	const [ imageData, setImageData ]         = useState( null );
+	const { postID }        = attributes;
+	const [ post, setPost ] = useState( null );
 
 	// Fetch selected post to access data
 	useEffect( () => {
 		if ( postID ) {
 			const fetchPost = async () => {
-				const response = await fetch ( `${ window.location.origin }/wp-json/wp/v2/faculty-staff/${ postID }` );
+				const response = await fetch ( `${ window.location.origin }/wp-json/hpu/v1/directory?id=${ postID }` );
 				if ( response.ok ) {
 					const data = await response.json();
-					setPost( data );
+					setPost( data[0] );
 				}
 			};
 			fetchPost();
@@ -24,26 +23,6 @@ export default function Edit( { attributes, setAttributes } ) {
 			setPost( null );
 		}
 	}, [ postID ] );
-
-	// Fetch selected image data
-	useEffect( () => {
-		if ( post && post.featured_media ) {
-			const fetchImageData = async ( attachmentID ) => {
-				const response = await fetch( `${ window.location.origin }/wp-json/wp/v2/media/${ attachmentID }` );
-				if (response.ok) {
-					const data     = await response.json();
-					const thumbUrl = data.media_details.sizes.thumbnail.source_url;
-					const imageUrl = data.media_details.sizes.medium.source_url;
-					setImageData( { thumbUrl, imageUrl } );
-				}
-				return null;
-			};
-			fetchImageData( post.featured_media );
-		}
-		else {
-			setImageData( null );
-		}
-	}, [ post ] );
 
 	const conformPhoneNumber = ( phoneNumber ) => {
 		const pattern = /^[^\d]*\+?1?[^\d]*(\d{3})[^\d]*(\d{3})[^\d]*(\d{4})[^\d]*$/;
@@ -66,10 +45,10 @@ export default function Edit( { attributes, setAttributes } ) {
 				{ post ? (
 					<div className='profile-card'>
 
-						{ imageData && (
+						{ post.image && (
 							<div className='profile-card-image'>
 								<img
-									src={ imageData.thumbUrl }
+									src={ post.image?.thumbnail ?? post.image?.url }
 									alt={ post.title + ' Profile Photo' }
 								/>
 							</div>
@@ -77,32 +56,32 @@ export default function Edit( { attributes, setAttributes } ) {
 
 						<div className='profile-card-text'>
 							<div className='profile-card-title profile-selected'>
-								<a data-preview-href={ post.link }>{ post.title.rendered }</a>
+								<a data-preview-href={ post.link }>{ post.title }</a>
 							</div>
 
-							{ post.acf.job_role && (
-								<div className='profile-card-role'>{ post.acf.job_role }</div>
+							{ post.job_role && (
+								<div className='profile-card-role'>{ post.job_role }</div>
 							) }
 
-							{ post.acf.email && (
+							{ post.email && (
 								<div className='profile-card-email'>
 									<span className='icon'>
 										{/* <svg fill='#330072' width='15' height='15'>
 											<use xlink:href='#icon_email'></use>
 											</svg> */}
 									</span>
-									<a data-preview-href={ `mailto:${ post.acf.email }` }>{ post.acf.email }</a>
+									<a data-preview-href={ `mailto:${ post.email }` }>{ post.email }</a>
 								</div>
 							) }
 
-							{ post.acf.phone && (
+							{ post.phone && (
 								<div className='profile-card-phone'>
 									<span className='icon'>
 										{/* <svg fill='#330072' width='15' height='15'>
 											<use xlink:href='#icon_phone'></use>
 											</svg> */}
 									</span>
-									<a data-preview-href={ `tel:${ conformPhoneNumber( post.acf.phone ) }` }>{ conformPhoneNumber( post.acf.phone ) }</a>
+									<a data-preview-href={ `tel:${ conformPhoneNumber( post.phone ) }` }>{ conformPhoneNumber( post.phone ) }</a>
 								</div>
 							) }
 						</div>
