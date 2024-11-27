@@ -51,63 +51,27 @@ function hpu_api_multisite_get_blog_by_id( $request ) {
 	return rest_ensure_response( $data );
 }
 
-function hpu_api_multisite_get_blog_categories( $request ) {
-	$blog_id = $request->get_param( 'id' );
+function hpu_api_multisite_get_blog_taxonomy( $request ) {
+	$blog_id  = $request->get_param( 'id' );
+	$taxonomy = $request->get_param( 'taxonomy' );
 
 	switch_to_blog( $blog_id );
-	$categories = get_categories( array( 'hide_empty' => false ) );
-	restore_current_blog();
-
-	$data = array();
-	foreach ( $categories as $category ) {
-		$data[] = array(
-			'id'   => $category->term_id,
-			'name' => $category->name,
-		);
-	}
-
-	return rest_ensure_response( $data );
-}
-
-function hpu_api_multisite_get_blog_associated_sites( $request ) {
-	$blog_id = $request->get_param( 'id' );
-
-	switch_to_blog( $blog_id );
-
-	// Initialize categories as array, then populate if custom taxonomy exists
-	$categories = array();
-	if ( taxonomy_exists( 'associated-site' ) ) {
-		$categories = get_terms( array(
-			'taxonomy' => 'associated-site',
+	if ( taxonomy_exists( $taxonomy ) ) {
+		$terms = get_terms( array(
+			'taxonomy'   => $taxonomy,
 			'hide_empty' => false,
 		) );
 	}
-
 	restore_current_blog();
 
 	$data = array();
-	foreach ( $categories as $category ) {
+	foreach ( $terms as $term ) {
 		$data[] = array(
-			'id'   => $category->term_id,
-			'name' => $category->name,
-		);
-	}
-
-	return rest_ensure_response( $data );
-}
-
-function hpu_api_multisite_get_blog_terms( $request ) {
-	$blog_id = $request->get_param( 'id' );
-
-	switch_to_blog( $blog_id );
-	$categories = get_terms( array( 'hide_empty' => false ) );
-	restore_current_blog();
-
-	$data = array();
-	foreach ( $categories as $category ) {
-		$data[] = array(
-			'id'   => $category->term_id,
-			'name' => $category->name,
+			'id'    => $term->term_id,
+			'name'  => $term->name,
+			'slug'  => $term->slug,
+			'type'  => $term->taxonomy,
+			'count' => $term->count
 		);
 	}
 
@@ -153,6 +117,27 @@ function hpu_api_multisite_register_endpoint() {
 		),
 		'permission_callback' => '__return_true',
 	) );
+	// hpu/v1/blogs/<id>/<taxonomy>
+	register_rest_route( 'hpu/v1', 'blogs/(?P<id>\d+)/(?P<taxonomy>.+)', array(
+		'methods'  => 'GET',
+		'callback' => 'hpu_api_multisite_get_blog_taxonomy',
+		'args'     => array(
+			'id' => array (
+				'required'          => true,
+				'validate_callback' => function( $param, $request, $key ) {
+					return is_numeric( $param );
+				},
+			),
+			'taxonomy' => array(
+				'required'          => true,
+				'validate_callback' => function( $param, $request, $key ) {
+					return is_string( $param );
+				},
+			),
+		),
+		'permission_callback' => '__return_true',
+	) );
+	/* Individual term endpoints
 	// hpu/v1/blogs/<id>/categories
 	register_rest_route( 'hpu/v1', 'blogs/(?P<id>\d+)/categories', array(
 		'methods'  => 'GET',
@@ -195,5 +180,6 @@ function hpu_api_multisite_register_endpoint() {
 		),
 		'permission_callback' => '__return_true',
 	) );
+	 */
 }
 add_action( 'rest_api_init', 'hpu_api_multisite_register_endpoint' );
