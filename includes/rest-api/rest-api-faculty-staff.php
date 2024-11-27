@@ -8,8 +8,8 @@
 function hpu_api_directory_get_profiles( $request ) {
 	$id       = $request->get_param( 'id' );
 	$includes = $request->get_param( 'includes' );
-	$page     = $request->get_param( 'page' ) ?: 1;
-	$per_page = $request->get_param( 'per_page' ) ?: 10;
+	$page     = $request->get_param( 'page' ) ?? 1;
+	$per_page = $request->get_param( 'per_page' ) ?? 10;
 	$search   = $request->get_param( 'search' );
 	$data = array();
 
@@ -149,7 +149,8 @@ function hpu_api_directory_register_endpoint() {
 				},
 				'sanitize_callback' => 'sanitize_text_field',
 			),
-		)
+		),
+		'permission_callback' => '__return_true',
 	) );
 }
 add_action( 'rest_api_init', 'hpu_api_directory_register_endpoint' );

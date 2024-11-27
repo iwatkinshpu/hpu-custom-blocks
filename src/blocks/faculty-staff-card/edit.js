@@ -36,7 +36,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				<PostSearchControls
 					postID={ postID }
 					postType='faculty-staff'
-					label='Select Directory Profile'
+					searchLabel='Select Directory Profile'
 					onChange={ ( value ) => { setAttributes( { postID: value } ) } }
 				/>
 			</InspectorControls>
