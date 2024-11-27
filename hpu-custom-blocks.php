@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @see https://developer.wordpress.org/reference/functions/register_block_type/
  */
 function hpu_custom_blocks_block_init() {
-	$build_dir = plugin_dir_path( __FILE__ ) . 'build/';
+	$build_dir = plugin_dir_path( __FILE__ ) . 'build/blocks/';
 	foreach ( glob( $build_dir . '*/' ) as $block_dir ) {
 		if ( ! file_exists( $block_dir . 'block.json' ) ) {
 			error_log( 'hpu-custom-blocks ### failed to register block at ' . $block_dir . ' --- no block.json file found' );
@@ -37,13 +37,21 @@ function hpu_custom_blocks_block_init() {
 }
 add_action( 'init', 'hpu_custom_blocks_block_init' );
 
+/**
+ * Register custom API endpoints to support HPU features through the REST API
+ */
+function hpu_register_custom_endpoints() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/rest-api.php';
+}
+add_action( 'init', 'hpu_register_custom_endpoints' );
+
 function maybe_add_acf_to_api() {
     // Loop through all public post types
 	if ( function_exists( 'get_fields' ) && current_user_can( 'edit_posts' ) ) {
 		foreach ( get_post_types( [ 'public' => true ], 'objects' ) as $post_type ) {
 			register_rest_field( $post_type->name, 'acf', [
 				'get_callback' => function( $object ) {
-						return get_fields( $object['id'] );
+					return get_fields( $object['id'] );
 				},
 				'schema' => null,
 			] );
