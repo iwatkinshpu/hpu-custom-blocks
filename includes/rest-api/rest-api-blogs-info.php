@@ -73,20 +73,12 @@ function hpu_api_multisite_get_blog_associated_sites( $request ) {
 	$blog_id = $request->get_param( 'id' );
 
 	switch_to_blog( $blog_id );
-	// bail if site does not support custom associated-site taxonomy
-	if ( ! taxonomy_exists( 'associated-site' ) ) {
-		// debugging
-		$data = get_taxonomies( array(
-			'_built_in' => false,
-		), 'objects' );
-		restore_current_blog();
-		return rest_ensure_response( $data );
-	}
 
-	$categories = get_taxonomies( array(
+	$categories = get_terms( array(
 		'taxonomy' => 'associated-site',
 		'hide_empty' => false,
 	) );
+
 	restore_current_blog();
 
 	$data = array();
