@@ -74,10 +74,14 @@ function hpu_api_multisite_get_blog_associated_sites( $request ) {
 
 	switch_to_blog( $blog_id );
 
-	$categories = get_terms( array(
-		'taxonomy' => 'associated-site',
-		'hide_empty' => false,
-	) );
+	// Initialize categories as array, then populate if custom taxonomy exists
+	$categories = array();
+	if ( taxonomy_exists( 'associated-site' ) ) {
+		$categories = get_terms( array(
+			'taxonomy' => 'associated-site',
+			'hide_empty' => false,
+		) );
+	}
 
 	restore_current_blog();
 
