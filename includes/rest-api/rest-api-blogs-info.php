@@ -54,6 +54,7 @@ function hpu_api_multisite_get_blog_by_id( $request ) {
 function hpu_api_multisite_get_blog_taxonomy( $request, $tax_type = null ) {
 	$blog_id  = $request->get_param( 'id' );
 	$taxonomy = $tax_type ?? $request->get_param( 'taxonomy' );
+	$terms    = array();
 
 	switch_to_blog( $blog_id );
 	if ( taxonomy_exists( $taxonomy ) ) {
