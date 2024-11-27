@@ -51,9 +51,9 @@ function hpu_api_multisite_get_blog_by_id( $request ) {
 	return rest_ensure_response( $data );
 }
 
-function hpu_api_multisite_get_blog_taxonomy( $request ) {
+function hpu_api_multisite_get_blog_taxonomy( $request, $tax_type = null ) {
 	$blog_id  = $request->get_param( 'id' );
-	$taxonomy = $request->get_param( 'taxonomy' );
+	$taxonomy = $tax_type ?? $request->get_param( 'taxonomy' );
 
 	switch_to_blog( $blog_id );
 	if ( taxonomy_exists( $taxonomy ) ) {
@@ -69,7 +69,6 @@ function hpu_api_multisite_get_blog_taxonomy( $request ) {
 		$data[] = array(
 			'id'    => $term->term_id,
 			'name'  => $term->name,
-			'slug'  => $term->slug,
 			'type'  => $term->taxonomy,
 			'count' => $term->count
 		);
@@ -79,6 +78,7 @@ function hpu_api_multisite_get_blog_taxonomy( $request ) {
 }
 
 function hpu_api_multisite_register_endpoint() {
+
 	// hpu/v1/blogs
 	register_rest_route( 'hpu/v1', 'blogs', array(
 		'methods'  => 'GET',
@@ -103,6 +103,7 @@ function hpu_api_multisite_register_endpoint() {
 		),
 		'permission_callback' => '__return_true',
 	) );
+
 	// hpu/v1/blogs/<id>
 	register_rest_route( 'hpu/v1', 'blogs/(?P<id>\d+)', array(
 		'methods'  => 'GET',
@@ -117,8 +118,9 @@ function hpu_api_multisite_register_endpoint() {
 		),
 		'permission_callback' => '__return_true',
 	) );
-	// hpu/v1/blogs/<id>/<taxonomy>
-	register_rest_route( 'hpu/v1', 'blogs/(?P<id>\d+)/(?P<taxonomy>[a-zA-Z-_]+)', array(
+
+	// hpu/v1/blogs/<id>/tax/<taxonomy>
+	register_rest_route( 'hpu/v1', 'blogs/(?P<id>\d+)/tax/(?P<taxonomy>[a-zA-Z-_]+)', array(
 		'methods'  => 'GET',
 		'callback' => 'hpu_api_multisite_get_blog_taxonomy',
 		'args'     => array(
@@ -137,14 +139,16 @@ function hpu_api_multisite_register_endpoint() {
 		),
 		'permission_callback' => '__return_true',
 	) );
-	/* Individual term endpoints
+
 	// hpu/v1/blogs/<id>/categories
 	register_rest_route( 'hpu/v1', 'blogs/(?P<id>\d+)/categories', array(
 		'methods'  => 'GET',
-		'callback' => 'hpu_api_multisite_get_blog_categories',
+		'callback' => function( $request ) {
+			return hpu_api_multisite_get_blog_taxonomy( $request, 'category' );
+		},
 		'args'     => array(
 			'id' => array (
-				'required' => true,
+				'required'          => true,
 				'validate_callback' => function( $param, $request, $key ) {
 					return is_numeric( $param );
 				},
@@ -152,13 +156,16 @@ function hpu_api_multisite_register_endpoint() {
 		),
 		'permission_callback' => '__return_true',
 	) );
+
 	// hpu/v1/blogs/<id>/associated-sites
 	register_rest_route( 'hpu/v1', 'blogs/(?P<id>\d+)/associated-sites', array(
 		'methods'  => 'GET',
-		'callback' => 'hpu_api_multisite_get_blog_associated_sites',
+		'callback' => function( $request ) {
+			return hpu_api_multisite_get_blog_taxonomy( $request, 'associated-site' );
+		},
 		'args'     => array(
 			'id' => array (
-				'required' => true,
+				'required'          => true,
 				'validate_callback' => function( $param, $request, $key ) {
 					return is_numeric( $param );
 				},
@@ -166,13 +173,16 @@ function hpu_api_multisite_register_endpoint() {
 		),
 		'permission_callback' => '__return_true',
 	) );
-	// hpu/v1/blogs/<id>/terms
-	register_rest_route( 'hpu/v1', 'blogs/(?P<id>\d+)/terms', array(
+
+	// hpu/v1/blogs/<id>/tags
+	register_rest_route( 'hpu/v1', 'blogs/(?P<id>\d+)/tags', array(
 		'methods'  => 'GET',
-		'callback' => 'hpu_api_multisite_get_blog_terms',
+		'callback' => function( $request ) {
+			return hpu_api_multisite_get_blog_taxonomy( $request, 'post_tag' );
+		},
 		'args'     => array(
 			'id' => array (
-				'required' => true,
+				'required'          => true,
 				'validate_callback' => function( $param, $request, $key ) {
 					return is_numeric( $param );
 				},
@@ -180,6 +190,5 @@ function hpu_api_multisite_register_endpoint() {
 		),
 		'permission_callback' => '__return_true',
 	) );
-	 */
 }
 add_action( 'rest_api_init', 'hpu_api_multisite_register_endpoint' );
