@@ -118,7 +118,7 @@ function hpu_api_multisite_register_endpoint() {
 		'permission_callback' => '__return_true',
 	) );
 	// hpu/v1/blogs/<id>/<taxonomy>
-	register_rest_route( 'hpu/v1', 'blogs/(?P<id>\d+)/(?P<taxonomy>.+)', array(
+	register_rest_route( 'hpu/v1', 'blogs/(?P<id>\d+)/(?P<taxonomy>[a-zA-Z-_]+)', array(
 		'methods'  => 'GET',
 		'callback' => 'hpu_api_multisite_get_blog_taxonomy',
 		'args'     => array(
