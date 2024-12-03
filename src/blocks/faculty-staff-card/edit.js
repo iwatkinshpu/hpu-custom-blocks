@@ -9,11 +9,12 @@ export default function Edit( { attributes, setAttributes } ) {
 	// Fetch selected post to access data
 	useEffect( () => {
 		if ( postID ) {
+			console.log( postID );
 			const fetchPost = async () => {
-				const response = await fetch ( `${ window.location.origin }/wp-json/hpu/v1/directory?id=${ postID }` );
+				const response = await fetch ( `${ window.location.origin }/wp-json/hpu/v1/directory/${ postID }/` );
 				if ( response.ok ) {
 					const data = await response.json();
-					setPost( data[0] );
+					setPost( data );
 				}
 			};
 			fetchPost();
@@ -35,7 +36,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				<PostSearchControls
 					blogPath='/'
 					postID={ postID }
-					postType='faculty-staff'
+					apiNameSpace='hpu/v1/directory'
 					searchLabel='Select Directory Profile'
 					onChange={ ( value ) => { setAttributes( { postID: value } ) } }
 				/>
@@ -44,19 +45,19 @@ export default function Edit( { attributes, setAttributes } ) {
 
 				{ post ? (
 					<div className='profile-card'>
-
+						{ console.log( post ) }
 						{ post.image && (
 							<div className='profile-card-image'>
 								<img
 									src={ post.image?.thumbnail ?? post.image?.url }
-									alt={ post.title + ' Profile Photo' }
+									alt={ post.title?.rendered + ' Profile Photo' }
 								/>
 							</div>
 						) }
 
 						<div className='profile-card-text'>
 							<div className='profile-card-title profile-selected'>
-								<a data-preview-href={ post.link }>{ post.title }</a>
+								<a data-preview-href={ post.link }>{ post.title?.rendered }</a>
 							</div>
 
 							{ post.job_role && (

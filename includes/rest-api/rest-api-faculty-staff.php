@@ -5,6 +5,65 @@
 
 /* temporary function namespace: hpu_api_directory */
 
+function hpu_api_directory_get_profile_details( $post ) {
+
+	// Setup image info
+	$image       = array();
+	$image['id'] = get_post_thumbnail_id( $post->ID );
+	if ( $image['id'] ) {
+		$image['url']       = wp_get_attachment_image_url( $image['id'], 'full' );
+		$image['medium']    = wp_get_attachment_image_url( $image['id'], 'medium' );
+		$image['thumbnail'] = wp_get_attachment_image_url( $image['id'], 'thumbnail' );
+		$image['alt']       = get_post_meta( $image['id'], '_wp_attachment_image_alt', true);
+	}
+
+	// Initial postdata array
+	$post_data = array(
+		'id'          => $post->ID,
+		'url'         => get_permalink( $post->ID ),
+		'title'       => array(
+			'rendered' => get_the_title( $post ),
+		),
+		'image'       => $image,
+		'first_name'  => '',
+		'last_name'   => '',
+		'job_role'    => '',
+		'location'    => '',
+		'phone'       => '',
+		'email'       => '',
+		'description' => '',
+		'biography'   => '',
+		'education'   => array(),
+		'majors'      => array(),
+	);
+
+	if ( function_exists( 'get_field' ) ) {
+
+		// List of directly accessible fields
+		$fields = array (
+			'first_name',
+			'last_name',
+			'job_role',
+			'location',
+			'phone',
+			'email',
+			'description',
+			'biography',
+		);
+
+		// Set the post_data for each field
+		foreach ( $fields as $field ) {
+			$post_data[ $field ] = get_field( $field, $post->ID ) ?? '';
+		}
+
+		// repeater fields
+		$post_data['education'] = hpu_api_directory_get_fields( 'education', $post->ID );
+		$post_data['majors']    = hpu_api_directory_get_fields( 'majors',    $post->ID );
+	}
+
+	return $post_data;
+}
+
 function hpu_api_directory_get_profiles( $request ) {
 	$id       = $request->get_param( 'id' );
 	$includes = $request->get_param( 'includes' );
@@ -38,61 +97,16 @@ function hpu_api_directory_get_profiles( $request ) {
 	// Iterate through posts and populated the data
 	foreach ( $faculty_staff_posts as $post ) {
 
-		// Setup image info
-		$image       = array();
-		$image['id'] = get_post_thumbnail_id( $post->ID );
-		if ( $image['id'] ) {
-			$image['url']       = wp_get_attachment_image_url( $image['id'], 'full' );
-			$image['medium']    = wp_get_attachment_image_url( $image['id'], 'medium' );
-			$image['thumbnail'] = wp_get_attachment_image_url( $image['id'], 'thumbnail' );
-			$image['alt']       = get_post_meta( $image['id'], '_wp_attachment_image_alt', true);
-		}
-
-		// Initial postdata array
-		$post_data = array(
-			'id'          => $post->ID,
-			'url'         => get_permalink( $post->ID ),
-			'title'       => get_the_title( $post ),
-			'image'       => $image,
-			'first_name'  => '',
-			'last_name'   => '',
-			'job_role'    => '',
-			'location'    => '',
-			'phone'       => '',
-			'email'       => '',
-			'description' => '',
-			'biography'   => '',
-			'education'   => array(),
-			'majors'      => array(),
-		);
-
-		if ( function_exists( 'get_field' ) ) {
-
-			// List of directly accessible fields
-			$fields = array (
-				'first_name',
-				'last_name',
-				'job_role',
-				'location',
-				'phone',
-				'email',
-				'description',
-				'biography',
-			);
-
-			// Set the post_data for each field
-			foreach ( $fields as $field ) {
-				$post_data[ $field ] = get_field( $field, $post->ID ) ?? '';
-			}
-
-			// repeater fields
-			$post_data['education'] = hpu_api_directory_get_fields( 'education', $post->ID );
-			$post_data['majors']    = hpu_api_directory_get_fields( 'majors',    $post->ID );
-		}
-
-		$data[] = $post_data;
+		$data[] = hpu_api_directory_get_profile_details( $post );
 	}
 
+	return rest_ensure_response( $data );
+}
+
+function hpu_api_directory_get_profile_by_id( $request ) {
+	$post_id = $request->get_param( 'id' );
+	$post    = get_post( $post_id );
+	$data    = hpu_api_directory_get_profile_details( $post);
 	return rest_ensure_response( $data );
 }
 
@@ -115,6 +129,8 @@ function hpu_api_directory_get_fields( $repeater_field, $post_id ) {
 }
 
 function hpu_api_directory_register_endpoint() {
+
+	// hpu/v1/directory
 	register_rest_route( 'hpu/v1', 'directory', array(
 		'methods'             => 'GET',
 		'callback'            => 'hpu_api_directory_get_profiles',
@@ -159,6 +175,21 @@ function hpu_api_directory_register_endpoint() {
 					return is_string( $param ) && strlen( $param ) <= 40;
 				},
 				'sanitize_callback' => 'sanitize_text_field',
+			),
+		),
+		'permission_callback' => '__return_true',
+	) );
+
+	// hpu/v1/directory/<id>
+	register_rest_route( 'hpu/v1', 'directory/(?P<id>\d+)', array(
+		'methods'  => 'GET',
+		'callback' => 'hpu_api_directory_get_profile_by_id',
+		'args'     => array(
+			'id' => array (
+				'required' => true,
+				'validate_callback' => function( $param, $request, $key ) {
+					return is_numeric( $param );
+				},
 			),
 		),
 		'permission_callback' => '__return_true',
