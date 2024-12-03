@@ -1,7 +1,6 @@
 import { useState, useEffect } from '@wordpress/element';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { PostSearchControls } from '../../components/PostSearchControls';
-import './editor.scss';
+import { PostSearchControls } from '@hpu-wp/components';
 
 export default function Edit( { attributes, setAttributes } ) {
 	const { postID }        = attributes;
@@ -34,6 +33,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		<>
 			<InspectorControls>
 				<PostSearchControls
+					blogPath='/'
 					postID={ postID }
 					postType='faculty-staff'
 					searchLabel='Select Directory Profile'

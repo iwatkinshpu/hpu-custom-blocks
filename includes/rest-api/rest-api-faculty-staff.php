@@ -28,8 +28,8 @@ function hpu_api_directory_get_profiles( $request ) {
 
 	// If Includes set, search group of IDs - ?id parameter takes priority
 	if ( $includes ) {
-		$blog_ids         = explode( ',', $includes );
-		$args['post__in'] = $blog_ids;
+		$post_ids         = explode( ',', $includes );
+		$args['post__in'] = $post_ids;
 	}
 
 	// Fetch the posts
@@ -124,6 +124,17 @@ function hpu_api_directory_register_endpoint() {
 					return is_numeric( $param );
 				},
 				'sanitize_callback' => 'absint',
+			),
+			'includes' => array(
+				'validate_callback' => function( $param, $request, $key ) {
+					$ids = explode( ',', $param );
+					foreach ( $ids as $id ) {
+						if ( ! is_numeric( $id ) ) {
+							return false;
+						}
+					}
+					return true;
+				},
 			),
 			'page' => array(
 				'validate_callback' => function( $param, $request, $key ) {

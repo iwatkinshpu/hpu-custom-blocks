@@ -9,6 +9,9 @@
 	if ( $attributes  && isset( $attributes['postID'] ) ) :
 		$post_id = $attributes['postID'];
 
+		// Go to root for data - TODO, retrieve setting for directory blog id
+		switch_to_blog( 1 );
+
 		$image['id'] = get_post_thumbnail_id( $post_id );
 		if ( $image['id'] ) {
 			$image['url']   = wp_get_attachment_image_url( $image['id'], 'medium' );
@@ -82,6 +85,8 @@
 			</div>
 
 		</div>
+
+		<?php restore_current_blog(); ?>
 	<?php endif; ?>
 
 </div>

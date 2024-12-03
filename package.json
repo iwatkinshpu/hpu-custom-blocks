@@ -20,5 +20,8 @@
 	},
 	"devDependencies": {
 		"@wordpress/scripts": "^30.4.0"
+	},
+	"dependencies": {
+		"@hpu-wp/components": "git+https://github.com/hpuit/hpu-wp-components.git#feature/ui-cleanup"
 	}
 }
