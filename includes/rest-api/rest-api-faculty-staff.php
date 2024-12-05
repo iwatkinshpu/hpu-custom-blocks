@@ -23,6 +23,7 @@ function hpu_api_directory_get_profile_details( $post ) {
 		'url'         => get_permalink( $post->ID ),
 		'title'       => array(
 			'rendered' => get_the_title( $post ),
+			'full'     => get_the_title( $post ),
 		),
 		'image'       => $image,
 		'first_name'  => '',
@@ -59,10 +60,43 @@ function hpu_api_directory_get_profile_details( $post ) {
 		// repeater fields
 		$post_data['education'] = hpu_api_directory_get_fields( 'education', $post->ID );
 		$post_data['majors']    = hpu_api_directory_get_fields( 'majors',    $post->ID );
+
+		// Potentially prefer shorter title
+		if ( $post_data['first_name'] && $post_data['last_name' ] ) {
+			$post_data['title']['rendered'] = $post_data['first_name'] . ' ' . $post_data['last_name'];
+		}
 	}
 
 	return $post_data;
 }
+
+function hpu_api_directory_custom_search( $where, $query ) {
+	global $wpdb;
+
+	if ( $query->get( 'profile_search' ) ) {
+		$search    = $query->get( 'profile_search' );
+		$like_term = '%' . $wpdb->esc_like( $search ) . '%';
+
+		$where .= "
+			AND (
+				$wpdb->posts.post_title LIKE '$like_term'
+				OR EXISTS (
+					SELECT 1
+					FROM $wpdb->postmeta
+					WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id
+					AND (
+						( meta_key = 'job_role' AND meta_value LIKE '$like_term' )
+						OR ( meta_key = 'phone' AND meta_value LIKE '$like_term' )
+						OR ( meta_key = 'email' AND meta_value LIKE '$like_term' )
+					)
+				)
+			)
+		";
+	}
+
+	return $where;
+}
+add_filter( 'posts_where', 'hpu_api_directory_custom_search', 10, 2 );
 
 function hpu_api_directory_get_profiles( $request ) {
 	$id       = $request->get_param( 'id' );
@@ -74,10 +108,9 @@ function hpu_api_directory_get_profiles( $request ) {
 
 	// Default args
 	$args = array(
-		'post_type'      => 'faculty-staff',
-		'paged'          => $page,
-		'posts_per_page' => $per_page,
-		's'              => $search,
+		'post_type'           => 'faculty-staff',
+		'paged'               => $page,
+		'posts_per_page'      => $per_page,
 	);
 
 	// If ID set, search specific ID
@@ -85,17 +118,22 @@ function hpu_api_directory_get_profiles( $request ) {
 		$args['p'] = $id;
 	}
 
+	// If search is set, do the search
+	else if ( $search ) {
+		$args['profile_search'] = $search;
+	}
+
 	// If Includes set, search group of IDs - ?id parameter takes priority
-	if ( $includes ) {
+	else if ( $includes ) {
 		$post_ids         = explode( ',', $includes );
 		$args['post__in'] = $post_ids;
 	}
 
 	// Fetch the posts
-	$faculty_staff_posts = get_posts( $args );
+	$profile_query = new WP_Query( $args );
 
 	// Iterate through posts and populated the data
-	foreach ( $faculty_staff_posts as $post ) {
+	foreach ( $profile_query->posts as $post ) {
 
 		$data[] = hpu_api_directory_get_profile_details( $post );
 	}
