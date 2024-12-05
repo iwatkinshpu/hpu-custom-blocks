@@ -19,7 +19,12 @@
   "viewScript": "file:./view.js",
   "attributes": {
     "postArray": {
-      "type": "array"
+      "type": "array",
+      "default": []
+    },
+    "postType": {
+      "type": "string",
+      "default": "posts"
     }
   }
 }

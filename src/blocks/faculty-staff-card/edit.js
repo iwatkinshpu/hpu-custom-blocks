@@ -6,7 +6,7 @@ import './editor.scss';
 
 export default function Edit( { attributes, setAttributes } ) {
 	const { postID }                  = attributes;
-	const [ post, setPost ]           = useState( null );
+	const [ post,      setPost      ] = useState( null );
 	const [ isLoading, setIsLoading ] = useState( false );
 
 	// Fetch selected post to access data
@@ -42,6 +42,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		return phoneNumber.replace( pattern, '+1 ($1) $2-$3' );
 	}
 
+	// Retrieve the default profile image using localized data from plugin
 	const defaultProfileImage = `${ window.HPUCustomBlocksData.assetPath }images/default-profile-image.jpg`;
 
 	// Return editor

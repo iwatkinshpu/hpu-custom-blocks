@@ -33,7 +33,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 function hpu_custom_blocks_localize_block_data( $script_handle ) {
 	$data = [
 		'directoryHome' => 1, // To be pulled dynamically later
-		'assetPath'    => plugin_dir_url( __FILE__ ) . 'assets/',
+		'assetPath'     => plugin_dir_url( __FILE__ ) . 'assets/',
+		'restNonce'     => wp_create_nonce( 'wp_rest' ),
 	];
 	
 	// Localize the data to the block script
