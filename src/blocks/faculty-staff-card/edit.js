@@ -1,20 +1,33 @@
 import { useState, useEffect } from '@wordpress/element';
+import { Spinner } from '@wordpress/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { PostSearchControls } from '@hpu-wp/components';
+import './editor.scss';
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { postID }        = attributes;
-	const [ post, setPost ] = useState( null );
+	const { postID }                  = attributes;
+	const [ post, setPost ]           = useState( null );
+	const [ isLoading, setIsLoading ] = useState( false );
 
 	// Fetch selected post to access data
 	useEffect( () => {
 		if ( postID ) {
-			console.log( postID );
+
+			setIsLoading( null === post );
+
 			const fetchPost = async () => {
-				const response = await fetch ( `${ window.location.origin }/wp-json/hpu/v1/directory/${ postID }/` );
-				if ( response.ok ) {
-					const data = await response.json();
-					setPost( data );
+				try {
+					const response = await fetch ( `${ window.location.origin }/wp-json/hpu/v1/directory/${ postID }/` );
+					if ( response.ok ) {
+						const data = await response.json();
+						setPost( data );
+					}
+				}
+				catch ( error ) {
+					console.warn( 'Error fetching profile: ', error );
+				}
+				finally {
+					setIsLoading( false );
 				}
 			};
 			fetchPost();
@@ -29,6 +42,8 @@ export default function Edit( { attributes, setAttributes } ) {
 		return phoneNumber.replace( pattern, '+1 ($1) $2-$3' );
 	}
 
+	const defaultProfileImage = `${ window.HPUCustomBlocksData.assetPath }images/default-profile-image.jpg`;
+
 	// Return editor
 	return (
 		<>
@@ -38,6 +53,7 @@ export default function Edit( { attributes, setAttributes } ) {
 					postID={ postID }
 					apiNameSpace='hpu/v1/directory'
 					searchLabel='Select Directory Profile'
+					selectedLabel='Selected Profile'
 					onChange={ ( value ) => { setAttributes( { postID: value } ) } }
 				/>
 			</InspectorControls>
@@ -45,19 +61,18 @@ export default function Edit( { attributes, setAttributes } ) {
 
 				{ post ? (
 					<div className='profile-card'>
-						{ console.log( post ) }
-						{ post.image && (
-							<div className='profile-card-image'>
-								<img
-									src={ post.image?.thumbnail ?? post.image?.url }
-									alt={ post.title?.rendered + ' Profile Photo' }
-								/>
-							</div>
-						) }
+
+						<div className='profile-card-image'>
+							<img
+								src={ post?.image?.thumbnail ?? post?.image?.url ?? defaultProfileImage }
+								alt={ post?.title?.rendered + ' Profile Photo' }
+							/>
+						</div>
 
 						<div className='profile-card-text'>
+
 							<div className='profile-card-title profile-selected'>
-								<a data-preview-href={ post.link }>{ post.title?.rendered }</a>
+								<a data-preview-href={ post.link }>{ post?.title?.full }</a>
 							</div>
 
 							{ post.job_role && (
@@ -85,12 +100,22 @@ export default function Edit( { attributes, setAttributes } ) {
 									<a data-preview-href={ `tel:${ conformPhoneNumber( post.phone ) }` }>{ conformPhoneNumber( post.phone ) }</a>
 								</div>
 							) }
-						</div>
 
+						</div>
 					</div>
 				) : (
 					<div className='profile-card profile-not-selected'>
-						<span>Please Select a Directory Profile from the side bar.</span>
+
+						<div className='profile-card-image'>
+							{ isLoading ? ( <Spinner/> ) : (
+								<img
+									src={ defaultProfileImage }
+									alt='Default Profile Photo'
+								/>
+							) }
+						</div>
+
+						<div className='profile-card-text'>Please Select a Directory Profile from the side bar.</div>
 					</div>
 				) }
 
