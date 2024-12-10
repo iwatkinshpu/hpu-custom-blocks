@@ -100,7 +100,7 @@ add_filter( 'posts_where', 'hpu_api_directory_custom_search', 10, 2 );
 
 function hpu_api_directory_get_profiles( $request ) {
 	$id       = $request->get_param( 'id' );
-	$includes = $request->get_param( 'includes' );
+	$include  = $request->get_param( 'include' );
 	$page     = $request->get_param( 'page' ) ?? 1;
 	$per_page = $request->get_param( 'per_page' ) ?? 10;
 	$search   = $request->get_param( 'search' );
@@ -124,9 +124,9 @@ function hpu_api_directory_get_profiles( $request ) {
 		$args['profile_search'] = $search;
 	}
 
-	// If Includes set, search group of IDs - ?id parameter takes priority
-	else if ( $includes ) {
-		$post_ids         = explode( ',', $includes );
+	// If include set, search group of IDs - ?id parameter takes priority
+	else if ( $include ) {
+		$post_ids         = explode( ',', $include );
 		$args['post__in'] = $post_ids;
 	}
 
@@ -180,7 +180,7 @@ function hpu_api_directory_register_endpoint() {
 				},
 				'sanitize_callback' => 'absint',
 			),
-			'includes' => array(
+			'include' => array(
 				'validate_callback' => function( $param, $request, $key ) {
 					$ids = explode( ',', $param );
 					foreach ( $ids as $id ) {
