@@ -109,6 +109,7 @@ function hpu_api_directory_get_profiles( $request ) {
 	// Default args
 	$args = array(
 		'post_type'           => 'faculty-staff',
+		'post_status'         => 'publish',
 		'paged'               => $page,
 		'posts_per_page'      => $per_page,
 	);
