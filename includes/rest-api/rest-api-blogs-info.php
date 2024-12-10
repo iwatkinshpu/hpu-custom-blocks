@@ -5,20 +5,16 @@
 
 /* temporary function namespace: hpu_api_multisite */
 
-function hpu_api_multisite_get_blog_details( $blog_id ) {
-	$details = get_blog_details( $blog_id );
-	if ( ! $details ) {
-		return array();
-	}
+function hpu_api_multisite_filter_blog_details( $blog ) {
 	$data = array(
-		'id'       => $details->blog_id,
-		'name'     => $details->blogname,
-		'domain'   => $details->domain,
-		'path'     => $details->path,
-		'url'      => $details->siteurl,
-		'active'   => $details->public,
-		'archived' => $details->archived,
-		'deleted'  => $details->deleted,
+		'id'       => $blog->blog_id,
+		'name'     => $blog->blogname,
+		'domain'   => $blog->domain,
+		'path'     => $blog->path,
+		'url'      => $blog->siteurl,
+		'active'   => $blog->public,
+		'archived' => $blog->archived,
+		'deleted'  => $blog->deleted,
 	);
 	return $data;
 }
@@ -26,20 +22,32 @@ function hpu_api_multisite_get_blog_details( $blog_id ) {
 function hpu_api_multisite_get_blog_info( $request ) {
 	$blog_id  = $request->get_param( 'id' );
 	$includes = $request->get_param( 'includes' );
+	$search   = $request->get_param( 'search' );
+	$page     = $request->get_param( 'page' ) ?? 1;
+	$per_page = $request->get_param( 'per_page' ) ?? 100;
 	$data     = array();
 
+	// base args - simulate pagination
+	$args = array(
+		'number' => $per_page,
+		'offset' => ( $page - 1 ) * $per_page,
+	);
+
+	// optional params
 	if ( $includes ) {
-		$blogs = explode( ',', $includes );
+		$args['site__in'] = explode( ',', $includes );
 	}
 	elseif ( $blog_id ) {
-		$blogs = [ $blog_id ];
+		$args['site__in'] = [ $blog_id ];
 	}
-	else {
-		$blogs = get_sites( array( 'fields' => 'ids' ) );
+	elseif ( $search ) {
+		$args['search'] = $search;
 	}
 
+	$blogs = get_sites( $args );
+
 	foreach ( $blogs as $blog ) {
-		$data[] = hpu_api_multisite_get_blog_details( $blog );
+		$data[] = hpu_api_multisite_filter_blog_details( $blog );
 	}
 
 	return rest_ensure_response( $data );
@@ -47,7 +55,7 @@ function hpu_api_multisite_get_blog_info( $request ) {
 
 function hpu_api_multisite_get_blog_by_id( $request ) {
 	$blog_id = $request->get_param( 'id' );
-	$data    = hpu_api_multisite_get_blog_details( $blog_id );
+	$data    = hpu_api_multisite_filter_blog_details( $blog_id );
 	return rest_ensure_response( $data );
 }
 
@@ -89,6 +97,23 @@ function hpu_api_multisite_register_endpoint() {
 				'validate_callback' => function( $param, $request, $key ) {
 					return is_numeric( $param );
 				}
+			),
+			'per_page' => array(
+				'validate_callback' => function( $param, $request, $key ) {
+					return is_numeric( $param ) && $param > 0 && $param <= 100;
+				},
+				'sanitize_callback' => 'absint',
+			),
+			'page' => array(
+				'validate_callback' => function( $param, $request, $key ) {
+					return is_numeric( $param ) && $param > 0;
+				},
+				'sanitize_callback' => 'absint',
+			),
+			'search' => array(
+				'validate_callback' => function( $param, $request, $key ) {
+					return is_string( $param ) && strlen( $param ) > 0 && strlen( $param ) <= 40;
+				},
 			),
 			'includes' => array(
 				'validate_callback' => function( $param, $request, $key ) {
