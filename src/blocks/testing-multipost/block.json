@@ -28,7 +28,7 @@
 		},
 		"blogID": { 
 			"type": "number",
-			"default": null
+			"default": 1
 		}
 	}
 }

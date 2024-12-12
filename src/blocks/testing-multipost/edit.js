@@ -1,45 +1,43 @@
-import { useState, useEffect } from '@wordpress/element';
+import { useEffect } from '@wordpress/element';
 import { SelectControl } from '@wordpress/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { PostSearchControls, SelectBlogControls } from '@hpu-wp/components';
 import './editor.scss';
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { postArray = [], postType, blogID } = attributes;
-	const [ filter, setFilter ]                = useState( {} );
+	const { postArray = [], postType = 'posts', blogID = 1 } = attributes;
+
+	const handlePostTypeChange = ( value ) => {
+		if ( value !== postType ) {
+			setAttributes( { postType: value, postArray: [] } ); // Reset postArray when postType changes
+		}
+	};
+
+	const handleBlogIDChange = ( value ) => {
+		const intValue = parseInt( value );
+		if ( intValue !== blogID ) {
+			setAttributes( { blogID: intValue, postArray: [] } ); // Reset postArray when blogID changes
+		}
+	};
 
 	useEffect( () => {
-		setFilter( {
-			postType: postType || null,
-			blogID: blogID || null,
-		} )
+		if ( postType !== attributes.postType || blogID !== attributes.blogID ) {
+			setAttributes( { postArray: [] } );
+		}
 	}, [ postType, blogID ] );
-
-	console.log( filter );
-
-	const resetPosts = ( reason='' ) => {
-		console.log( 'resetPosts', reason );
-		setAttributes( { postArray: [] } );
-	}
 
 	return (
 		<>
 			<InspectorControls>
 				<SelectBlogControls
 					blogID={ blogID }
-					onChange={ ( value ) => {
-						resetPosts( 'blogID: ' + blogID );
-						setAttributes( { blogID: value } )
-					} }
+					onChange={ handleBlogIDChange }
 				/>
 				<div className='hpu-multipost-testing-select-wrapper'>
 					<SelectControl
 						label='Select Post Type'
 						value={ postType || 'posts' }
-						onChange={ ( value ) => {
-							resetPosts( 'postType: ' + postType );
-							setAttributes( { postType: value } );
-						} }
+						onChange={ handlePostTypeChange }
 						options={ [
 							{ value: 'posts', label: 'Posts' },
 							{ value: 'pages', label: 'Pages' },
@@ -50,12 +48,10 @@ export default function Edit( { attributes, setAttributes } ) {
 				</div>
 				<PostSearchControls
 					postArray={ postArray }
-					postType={ filter?.postType }
-					blogID={ filter?.blogID }
-					wpNonce={ window.HPUCustomBlocksData.restNonce }
-					onChange={ ( value ) => {
-						setAttributes( { postArray: value } )
-					} }
+					postType={ postType }
+					blogID={ blogID }
+					wpNonce={ window?.wpApiSettings?.nonce }
+					onChange={ ( value ) => { setAttributes( { postArray: value } ) } }
 				/>
 			</InspectorControls>
 			<div { ...useBlockProps() }>
