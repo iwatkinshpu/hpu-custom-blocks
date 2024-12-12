@@ -56,9 +56,8 @@ export default function Edit( { attributes, setAttributes } ) {
 			</InspectorControls>
 			<div { ...useBlockProps() }>
 				<p>Testing MultiPost PostSearchControls component</p>
-				{ Array.isArray( postArray ) && postArray?.map( ( post, index ) => (
-					<p key={ index }>{ post }</p>
-				) ) }
+				<pre>postArray: { JSON.stringify( postArray ) }</pre>
+				<pre>attributes: { JSON.stringify( attributes ) }</pre>
 			</div>
 		</>
 	);
