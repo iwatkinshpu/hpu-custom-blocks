@@ -18,6 +18,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+if ( ! defined( 'HPU_CUSTOM_BLOCKS_VERSION' ) ) {
+	define( 'HPU_CUSTOM_BLOCKS_VERSION', '0.1.0' );
+}
+
+if ( ! defined( 'HPU_CUSTOM_BLOCKS_PLUGIN_PATH' ) ) {
+	define( 'HPU_CUSTOM_BLOCKS_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+}
+
 /**
  * Registers the block using the metadata loaded from the `block.json` file.
  * Behind the scenes, it registers also all assets so they can be enqueued
@@ -29,44 +37,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Enqueue plugin settings for availability within blocks
  */
-
-function hpu_custom_blocks_localize_block_data( $script_handle ) {
-	$data = [
-		'directoryHome' => 1, // To be pulled dynamically later
-		'assetPath'     => plugin_dir_url( __FILE__ ) . 'assets/',
-		'restNonce'     => wp_create_nonce( 'wp_rest' ),
-	];
-	
-	// Localize the data to the block script
-	wp_localize_script( $script_handle, 'HPUCustomBlocksData', $data );
-}
-
-function hpu_custom_blocks_block_init() {
-
-	// register the blocks
-	$build_dir = plugin_dir_path( __FILE__ ) . 'build/blocks/';
-
-	foreach ( glob( $build_dir . '*/' ) as $block_dir ) {
-		if ( ! file_exists( $block_dir . 'block.json' ) ) {
-			error_log( 'hpu-custom-blocks ### failed to register block at ' . $block_dir . ' --- no block.json file found' );
-			continue;
-		}
-
-		// register block
-		$block = register_block_type( $block_dir );
-
-		// localise block data script
-		if ( isset( $block->editor_script ) && $block->editor_script ) {
-			hpu_custom_blocks_localize_block_data( $block->editor_script );
-		}
-	}
-}
-add_action( 'init', 'hpu_custom_blocks_block_init' );
+require_once HPU_CUSTOM_BLOCKS_PLUGIN_PATH . 'includes/block-data.php';
 
 /**
  * Register custom API endpoints to support HPU features through the REST API
  */
-function hpu_register_custom_endpoints() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/rest-api.php';
-}
-add_action( 'init', 'hpu_register_custom_endpoints' );
+require_once HPU_CUSTOM_BLOCKS_PLUGIN_PATH . 'includes/rest-api.php';
+
+/**
+ * Register custom blocks
+ */
+require_once HPU_CUSTOM_BLOCKS_PLUGIN_PATH . 'includes/register-blocks.php';

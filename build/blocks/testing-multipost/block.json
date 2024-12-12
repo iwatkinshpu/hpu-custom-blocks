@@ -25,6 +25,10 @@
     "postType": {
       "type": "string",
       "default": "posts"
+    },
+    "blogID": {
+      "type": "number",
+      "default": 1
     }
   }
 }
