@@ -1,7 +1,8 @@
 import { useState, useEffect } from '@wordpress/element';
-import { Spinner } from '@wordpress/components';
+import { PanelBody, Spinner } from '@wordpress/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { PostSearchControls } from '@hpu-wp/components';
+import defaultProfileImage from '../../../assets/images/default-profile-image.jpg';
 import './editor.scss';
 
 export default function Edit( { attributes, setAttributes } ) {
@@ -42,21 +43,20 @@ export default function Edit( { attributes, setAttributes } ) {
 		return phoneNumber.replace( pattern, '+1 ($1) $2-$3' );
 	}
 
-	// Retrieve the default profile image using localized data from plugin
-	const defaultProfileImage = `${ window.HPUCustomBlocksData.assetPath }images/default-profile-image.jpg`;
-
 	// Return editor
 	return (
 		<>
 			<InspectorControls>
-				<PostSearchControls
-					blogPath='/'
-					postID={ postID }
-					apiNameSpace='hpu/v1/directory'
-					searchLabel='Select Directory Profile'
-					selectedLabel='Selected Profile'
-					onChange={ ( value ) => { setAttributes( { postID: value } ) } }
-				/>
+				<PanelBody title='Select Profile' initialOpen={ true }>
+					<PostSearchControls
+						blogPath='/'
+						postID={ postID }
+						apiNameSpace='hpu/v1/directory'
+						searchLabel='Select Directory Profile'
+						selectedLabel='Selected Profile'
+						onChange={ ( value ) => { setAttributes( { postID: value } ) } }
+					/>
+				</PanelBody>
 			</InspectorControls>
 			<div { ...useBlockProps() }>
 
