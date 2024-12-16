@@ -23,7 +23,7 @@ function hpu_custom_blocks_data_localization( $script_handle ) {
 	$blog_info = hpu_custom_blocks_blog_info();
 	$data = [
 		'directoryHome' => 1, // To be pulled dynamically later
-		'assetPath'     => HPU_CUSTOM_BLOCKS_PLUGIN_PATH . 'assets/',
+		'assetPath'     => HPU_CUSTOM_BLOCKS_PLUGIN_URL . 'assets/',
 		'blogs'         => $blog_info,
 	];
 	

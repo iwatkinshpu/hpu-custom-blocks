@@ -22,6 +22,10 @@ if ( ! defined( 'HPU_CUSTOM_BLOCKS_VERSION' ) ) {
 	define( 'HPU_CUSTOM_BLOCKS_VERSION', '0.1.0' );
 }
 
+if ( ! defined( 'HPU_CUSTOM_BLOCKS_PLUGIN_URL' ) ) {
+	define( 'HPU_CUSTOM_BLOCKS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+}
+
 if ( ! defined( 'HPU_CUSTOM_BLOCKS_PLUGIN_PATH' ) ) {
 	define( 'HPU_CUSTOM_BLOCKS_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 }
