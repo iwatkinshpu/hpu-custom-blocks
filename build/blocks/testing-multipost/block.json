@@ -26,6 +26,10 @@
       "type": "string",
       "default": "posts"
     },
+    "associatedSites": {
+      "type": "array",
+      "default": []
+    },
     "blogID": {
       "type": "number",
       "default": 1

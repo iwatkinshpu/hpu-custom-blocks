@@ -1,12 +1,1 @@
-/*!******************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/blocks/faculty-staff-card/editor.scss ***!
-  \******************************************************************************************************************************************************************************************************************************************************************/
-.profile-card.profile-not-selected .profile-card-image .components-spinner {
-  width: 100%;
-  height: 100%;
-}
-.profile-card.profile-not-selected .profile-card-text {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+.profile-card.profile-not-selected .profile-card-image .components-spinner{height:100%;width:100%}.profile-card.profile-not-selected .profile-card-text{align-items:center;display:flex;justify-content:center}
