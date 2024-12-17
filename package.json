@@ -9,6 +9,7 @@
 	"scripts": {
 		"build": "wp-scripts build --webpack-copy-php",
 		"build:clean": "npm run npm:clean && npm run clean && npm run build",
+		"create-block": "node scripts/create-block.js",
 		"npm:clean": "rm package-lock.json && npm install",
 		"clean": "rimraf build",
 		"format": "wp-scripts format",
