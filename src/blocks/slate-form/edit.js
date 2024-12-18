@@ -28,11 +28,13 @@ export default function Edit( { attributes, setAttributes } ) {
 			<InspectorControls>
 				<PanelBody
 					title='Slate Form Settings'
+					__nextHasNoMarginBottom
 				>
 					<TextControl
 						label='Slate Form ID'
 						value={ attributes.formID }
 						onChange={ ( formID ) => setAttributes( { formID } ) }
+						__nextHasNoMarginBottom
 					/>
 				</PanelBody>
 			</InspectorControls>

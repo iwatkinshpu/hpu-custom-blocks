@@ -40,7 +40,10 @@ export default function Edit( { attributes, setAttributes } ) {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title='Post Selection'>
+				<PanelBody
+					title='Post Selection'
+					__nextHasNoMarginBottom
+				>
 					<SelectBlogControls
 						className='hpu-multipost-testing--select-blog-control'
 						blogID={ blogID }

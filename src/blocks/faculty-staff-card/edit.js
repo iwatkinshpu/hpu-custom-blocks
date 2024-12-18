@@ -2,7 +2,7 @@ import { useState, useEffect } from '@wordpress/element';
 import { PanelBody, Spinner } from '@wordpress/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { PostSearchControls } from '@hpu-wp/components';
-import defaultProfileImage from '../../../assets/images/default-profile-image.jpg';
+import defaultProfileImage from '../../assets/images/default-profile-image.jpg';
 import './editor.scss';
 
 export default function Edit( { attributes, setAttributes } ) {
@@ -47,7 +47,11 @@ export default function Edit( { attributes, setAttributes } ) {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title='Select Profile' initialOpen={ true }>
+				<PanelBody
+					title='Select Profile'
+					initialOpen={ true }
+					__nextHasNoMarginBottom
+				>
 					<PostSearchControls
 						blogPath='/'
 						postID={ postID }

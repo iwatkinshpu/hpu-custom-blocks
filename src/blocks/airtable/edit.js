@@ -47,10 +47,12 @@ export default function Edit( { attributes, setAttributes } ) {
 						label='Airtable Share Link'
 						value={ shareLink }
 						onChange={ ( value ) => setAttributes( { shareLink: value } ) }
+						__nextHasNoMarginBottom
 					/>
 					<BaseControl
 						label='Airtable Form Height'
 						help='Changes to Auto-height may require a reload to view in editor.'
+						__nextHasNoMarginBottom
 					>
 						<RangeControl
 							value={ height }
@@ -58,11 +60,13 @@ export default function Edit( { attributes, setAttributes } ) {
 							disabled={ useAutoHeight }
 							min={ 200 }
 							max={ 1000 }
+							__nextHasNoMarginBottom
 						/>
 						<ToggleControl
 							label='Auto Height'
 							checked={ useAutoHeight }
 							onChange={ ( value ) => setAttributes( { useAutoHeight: value } ) }
+							__nextHasNoMarginBottom
 						/>
 					</BaseControl>
 				</PanelBody>
