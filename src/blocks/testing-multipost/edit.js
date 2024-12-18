@@ -40,7 +40,10 @@ export default function Edit( { attributes, setAttributes } ) {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title='Post Selection'>
+				<PanelBody
+					title='Post Selection'
+					__nextHasNoMarginBottom
+				>
 					<SelectBlogControls
 						className='hpu-multipost-testing--select-blog-control'
 						blogID={ blogID }
@@ -61,16 +64,15 @@ export default function Edit( { attributes, setAttributes } ) {
 					{ postType === 'pages' && (
 						<AssociatedSiteControls
 							className='hpu-multipost-testing--associated-site-control'
-							isMultiSelect={ false }
-							value={ associatedSites[0] }
+							isMultiSelect={ true }
+							value={ associatedSites }
 							onChange={ ( value ) => { setAttributes( { associatedSites: [ value ] } ) } }
 						/>
 					) }
 					{ postType === 'posts' && (
 						<AssociatedSiteControls
 							className='hpu-multipost-testing--associated-site-control'
-							isMultiSelect={ true }
-							value={ associatedSites }
+							value={ associatedSites[0] }
 							onChange={ ( value ) => { setAttributes( { associatedSites: value } ) } }
 						/>
 					) }

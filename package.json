@@ -1,6 +1,6 @@
 {
 	"name": "hpu-custom-blocks",
-	"version": "0.5.0",
+	"version": "0.5.4",
 	"description": "HPU Faculty-Staff Profile Card",
 	"author": "HPU Web Team",
 	"license": "GPL-2.0-or-later",
@@ -9,6 +9,7 @@
 	"scripts": {
 		"build": "wp-scripts build --webpack-copy-php",
 		"build:clean": "npm run npm:clean && npm run clean && npm run build",
+		"create-block": "node scripts/create-block.js",
 		"npm:clean": "rm package-lock.json && npm install",
 		"clean": "rimraf build",
 		"format": "wp-scripts format",

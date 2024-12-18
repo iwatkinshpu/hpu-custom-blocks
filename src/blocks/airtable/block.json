@@ -1,37 +1,33 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "hpu/testing-multipost",
+	"name": "hpu/airtable",
 	"version": "0.1.0",
-	"title": "Testing MultiPost",
-	"category": "theme",
+	"title": "Airtable",
+	"category": "embed",
 	"icon": "smiley",
-	"description": "Testing stuff...",
+	"description": "Custom block for embedding AirTable forms in Gutenberg.",
 	"example": {},
 	"supports": {
 		"html": false
 	},
-	"textdomain": "testing-multipost",
+	"textdomain": "airtable",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
 	"style": "file:./style-index.css",
 	"render": "file:./render.php",
 	"attributes": {
-		"postArray": { 
-			"type": "array",
-			"default": []
-		},
-		"postType": { 
+		"shareLink": {
 			"type": "string",
-			"default": "posts"
+			"default": ""
 		},
-		"associatedSites": {
-			"type": "array",
-			"default": []
+		"useAutoHeight": {
+			"type": "boolean",
+			"default": false
 		},
-		"blogID": { 
+		"formHeight": {
 			"type": "number",
-			"default": 1
+			"default": 533
 		}
 	}
 }
